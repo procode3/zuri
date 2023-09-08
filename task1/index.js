@@ -1,6 +1,6 @@
 const express = require('express')
-const http = require('http')
 const app = express()
+
 
 // Define a route that handles the GET request with query parameters
 app.get('/api', (req, res) => {
@@ -12,14 +12,15 @@ app.get('/api', (req, res) => {
 
   // Get the current UTC time with validation of +/-2 hours
   const now = new Date();
-  const utcTime = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + (2 * 60 * 60 * 1000)).toISOString();
+  const utcTime = now.toISOString().slice(0, -5) + 'Z'; 
+
 
   // Get the GitHub URL of the file being run and the GitHub repository URL
-  const githubFileURL = 'https://github.com/username/repo/blob/main/file_name.ext'; // Replace with your actual URLs
-  const githubRepoURL = 'https://github.com/username/repo'; // Replace with your actual URL
+  const githubFileURL = 'https://github.com/procode3/zuri/blob/master/task1/index.js';
+  const githubRepoURL = 'https://github.com/procode3/zuri'; 
 
   // Respond with the JSON object
-  res.json({
+  const jsonResponse = {
     slack_name,
     current_day: currentDay,
     utc_time: utcTime,
@@ -27,7 +28,11 @@ app.get('/api', (req, res) => {
     github_file_url: githubFileURL,
     github_repo_url: githubRepoURL,
     status_code: 200,
-  });
+  };
+
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('ngrok-skip-browser-warning', 'Yes');
+  res.send(JSON.stringify(jsonResponse, null, 2));
 });
 
 // Start the Express server
